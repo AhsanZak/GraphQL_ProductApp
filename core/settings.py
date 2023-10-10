@@ -126,14 +126,13 @@ STATIC_URL = 'static/'
 
 AUTH_USER_MODEL = 'users.ExtendUser'
 
-# GRAPHENE = {
-#     'SCHEMA': {'users': 'users.schema.UsersSchema'},
-    
-#     # 'SCHEMA': 'users.schema.schema',
-#     'MIDDLEWARE': [
-#         'graphql_jwt.middleware.JSONWebTokenMiddleware',
-#     ],
-# }
+GRAPHENE = {
+    # 'SCHEMA': {'users': 'users.schema.UsersSchema'},
+    # 'SCHEMA': 'users.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
+}
 
 AUTHENTICATION_BACKENDS = [
     "graphql_auth.backends.GraphQLAuthBackend",

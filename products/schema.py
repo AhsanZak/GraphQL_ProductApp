@@ -26,10 +26,47 @@ class ProductBrand(DjangoObjectType):
 
 class Query(graphene.ObjectType):
     all_products = graphene.List(ProductDetails)
+    all_product_types = graphene.List(ProductTypes)
+    all_categories = graphene.List(ProductCategory)
+    all_brands = graphene.List(ProductBrand)
 
     @login_required
     def resolve_all_products(root, info):
         return Product.objects.all()
     
+    @login_required
+    def resolve_all_product_types(root, info):
+        return ProductType.objects.all()
+    
+    @login_required
+    def resolve_all_categories(root, info):
+        return Category.objects.all()
+    
+    @login_required
+    def resolve_all_brands(root, info):
+        return Brand.objects.all()
+    
+    
+class ProductMutation(graphene.Mutation):
+    class Arguments:
+        title = graphene.String(required=True)
+        price = graphene.Decimal(required=True)
+        category = graphene.String(required=True)
+        type = graphene.String(required=True)
+        brand = graphene.String(required=True)
 
-schema = graphene.Schema(query=Query)
+    product = graphene.Field(ProductDetails)
+
+    @classmethod
+    def mutate(cls, root, info, title, price, category, type, brand):
+        category = Category.objects.get(name=category)
+        product_type = ProductType.objects.get(name=type)
+        brand = Brand.objects.get(name=brand)
+        product = Product(title=title, category=category, product_type=product_type, brand=brand, price=price)
+        product.save()
+        return ProductMutation(product=product)
+    
+class Mutation(graphene.ObjectType):
+    create_product = ProductMutation.Field()
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
