@@ -49,7 +49,7 @@ class Query(graphene.ObjectType):
     
 class ProductMutation(graphene.Mutation):
     class Arguments:
-        title = graphene.String(required=True)
+        name = graphene.String(required=True)
         price = graphene.Decimal(required=True)
         category = graphene.String(required=True)
         type = graphene.String(required=True)
@@ -58,11 +58,12 @@ class ProductMutation(graphene.Mutation):
     product = graphene.Field(ProductDetails)
 
     @classmethod
-    def mutate(cls, root, info, title, price, category, type, brand):
+    @login_required
+    def mutate(cls, root, info, name, price, category, type, brand):
         category = Category.objects.get(name=category)
         product_type = ProductType.objects.get(name=type)
         brand = Brand.objects.get(name=brand)
-        product = Product(title=title, category=category, product_type=product_type, brand=brand, price=price)
+        product = Product(name=name, category=category, product_type=product_type, brand=brand, price=price)
         product.save()
         return ProductMutation(product=product)
     
