@@ -74,3 +74,6 @@ URL : http://localhost:8000/products/graphql/
             }
         }
     }
+
+## Credits
+https://www.youtube.com/@veryacademy
