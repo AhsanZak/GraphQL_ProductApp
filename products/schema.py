@@ -66,8 +66,36 @@ class ProductMutation(graphene.Mutation):
         product = Product(name=name, category=category, product_type=product_type, brand=brand, price=price)
         product.save()
         return ProductMutation(product=product)
-    
+
+class BrandMutation(graphene.Mutation):
+    class Arguments:
+        name = graphene.String(required=True)
+        
+    brand = graphene.Field(ProductBrand)
+
+    @classmethod
+    @login_required
+    def mutate(cls, root, info, name):
+        brand = Brand(name=name)
+        brand.save()
+        return BrandMutation(brand=brand)
+
+class CategoryMutation(graphene.Mutation):
+    class Arguments:
+        name = graphene.String(required=True)
+        
+    category = graphene.Field(ProductCategory)
+
+    @classmethod
+    @login_required
+    def mutate(cls, root, info, name):
+        category = Category(name=name)
+        category.save()
+        return CategoryMutation(category=category)
+
 class Mutation(graphene.ObjectType):
     create_product = ProductMutation.Field()
+    create_brand = BrandMutation.Field()
+    create_category = CategoryMutation.Field()
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
